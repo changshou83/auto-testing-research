@@ -197,12 +197,6 @@ it('should parse single prompt correctly', () => {
 
    // 验证 preprocessList
    expect(prompt.preprocessList).toEqual([{ id: 'mock-id-4', key: 'writing_ideas', value: '%(writing_tips)s' }]);
-
-   // 验证 variableLinker
-   expect(prompt.variableLinker['mock-id-2']).toEqual([
-      { type: 'preprocess', uniqueId: 'mock-id-4' },
-      { type: 'message', uniqueId: 4 }
-   ]);
 });
 ```
 
