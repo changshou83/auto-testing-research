@@ -23,7 +23,7 @@
 
 放一张测试金字塔的图片
 
-业界普遍认可的参考比例为：
+参考比例为：
 
 单元测试：占比约 70%
 集成测试：占比约 20%
@@ -49,7 +49,7 @@
 2. 对核心逻辑编写对应的测试，保证后续添加新需求时不会影响旧功能
 3. 支持持续集成，代码提交后自动执行测试并生成报告
 
-## 单元测试工具 - Jest
+## 测试工具 - Jest
 
 ### 简介
 
@@ -62,34 +62,320 @@ Jest 是 **Meta（Facebook）** 开发的一款开源 JavaScript 测试框架，
 - 极简配置：默认即可运行测试，也可通过配置文件进行配置。
 - 内置断言库：提供丰富、可读性高的断言函数（`Jest Matchers`），支持链式调用。
 - 内置测试运行器：支持按约定自动识别测试文件，并行执行测试、监视模式，可自动识别变更并仅运行相关测试。
-- Mocking功能：可以模拟函数、模块、定时器、第三方库或 API 调用。用于隔离依赖、验证函数调用、控制依赖行为。
+- Mocking功能：可以模拟函数、模块、定时器、第三方库或 API 调用。用于隔离依赖、验证函数调用、控制被测代码的依赖行为。
 - 快照测试：首次运行保存快照，后续比较差异。适用于测试 UI 组件输出、配置文件、数据结构等。
 - 自动生成测试报告：内置集成 `Istanbul` 工具。可通过特殊标志生成测试报告，显示代码行、分支、函数、语句的覆盖情况。
 
-#### 测试 Node.js 项目
+#### 单元测试
 
+1. 编写测试代码
 
+```js
+// 一个可以从字符串中提取 %(xx_xx)s 格式字符串并检查其是否在变量列表中的函数
+import { drawUsableVariablesInString } from '../util';
 
-#### 搭配 TestingLibrary 可以完成前端组件测试
+describe('drawUsableVariablesInString', () => {
+    // 准备测试用数据
+    const usableVariables = [
+        { key: 'name' },
+        { key: 'age' }
+    ];
 
+    test('should return matched variables when all exist', () => {
+        // 1. 准备测试数据
+        const content = 'Hello, %(name)s! You are %(age)s years old.';
+        // 2. 执行测试代码  
+        const result = drawUsableVariablesInString(content, usableVariables);
+        // 3. 断言执行结果
+        expect(result).toEqual([usableVariables[0], usableVariables[1]]);
+    });
 
+    // 其他测试脚本
+});
+```
 
-### 方案对比
+2. 运行测试查看运行结果
 
-| 需求/工具 | Jest | Mocha | Vitest |
-|--|--|--|--|
-| **断言库** | 内置 | 需要Chai等第三方库 | 内置 |
-| **Mock功能** | 内置 | 需要Sinon等第三方库 | 内置 |
-| **测试运行器** | 内置 | 需要Mocha CLI | 内置 |
-| **并行执行** | 内置支持 | 需第三方插件 | 内置支持 |
-| **性能** | 中等 | 中等 | 快（依赖Vite） |
-| **配置复杂度** | 低（零配置启动） | 高（需配置多个库） | 低（与Vite共享配置） |
-| **覆盖率工具** | 内置Istanbul (nyc) | 需要Istanbul等第三方工具 | 内置C8或Istanbul |
-| **快照测试** | 内置支持 | 需要第三方库 | 内置支持 |
-| **社区支持** | 广泛 | 广泛 | 快速增长 |
-| **调试体验** | 一般 | 一般 | 内置调试工具 |
+使用`npx jest`运行测试用例，可以看到以下结果：
 
-Mocha内置功能太少，Vitest与Vite(一个打包器)生态绑定较深。
+![alt text](image-4.png)
+
+从结果中我们可以看到测试运行器运行的测试用例及测试文件的数量，测试执行用时等信息。
+
+#### Mock功能与快照测试
+
+快照测试：首次运行测试时，Jest 会捕获被测对象的输出（如 UI 渲染结果、数据结构等），并将其保存在自动生成的 `.snap` 文件中作为“基准”。后续测试运行时，Jest 会将当前输出与快照文件比对，任何不一致都会导致测试失败。
+
+适用场景：
+- 输出结构稳定但内容复杂（如大段 HTML/XML，复杂对象等）
+- 需要防止意外变更的配置对象
+
+不适用场景：
+- 包含动态数据（时间戳、随机 ID）
+- 频繁变更的输出
+- 简单的数值/布尔值断言
+
+测试解析prompt，转换为渲染时需要的数据结构：
+
+mock功能演示：parsePrompt中使用getUniqueID生成唯一ID，而 getUniqueID 生成的ID有随机数会导致测试结果不可控，因此需要mock getUniqueID的实现
+
+```js
+import { parsePrompt } from '../util';
+import * as utils from '../getUniqueID';
+
+// mock测试代码中对此模块的导入
+jest.mock('../getUniqueID');
+
+describe('parsePrompt', () => {
+    let counter = 1;
+    utils.getUniqueID.mockImplementation(() => `mock-id-${counter++}`);
+    beforeEach(() => {
+        // 重置计数器
+        counter = 1;
+    });
+    // 测试脚本
+});
+```
+
+快照测试演示：
+
+想要验证输出的结构是否是预期的，如果使用断言需要编写大量的断言语句。
+
+```js
+// 测试单条数据的正常解析
+it('should parse single prompt correctly', () => {
+   const data = {
+      "annotation": {
+            "article_title": "论文标题",
+            "writing_tips": "章节写作提示",
+            "research_idea": "研究内容"
+      },
+      "preprocessing": {
+            "writing_ideas": "%(writing_tips)s"
+      },
+      "prompt": [
+            {
+               "role": "system",
+               "content": "System message"
+            },
+            {
+               "role": "user",
+               "content": "%(article_title)s%(writing_tips)s%(research_idea)s%(writing_ideas)s"
+            }
+      ],
+      "module": "gen_research_ideas",
+      "name": "AI本科毕业论文生成写作提示",
+      "language": "all",
+      "model": "default"
+   };
+
+   const result = parsePrompt(data, langList, modelList);
+
+   // 验证基本结构
+   expect(result).toHaveLength(1);
+   const node = result[0];
+   expect(node.title).toBe('AI本科毕业论文生成写作提示');
+   expect(node.id).toBe('prompt0');
+
+   // 验证 prompt 内容
+   const prompt = node.data;
+   expect(prompt.name).toBe('AI本科毕业论文生成写作提示');
+   expect(prompt.module).toBe('gen_research_ideas');
+   expect(prompt.language).toBe('all');
+   expect(prompt.model).toBe('default');
+
+   // 验证 messageList
+   expect(prompt.messageList[0].content).toBe('System message');
+   expect(prompt.messageList[4].content).toBe('%(article_title)s%(writing_tips)s%(research_idea)s%(writing_ideas)s');
+
+   // 验证 annotationList
+   expect(prompt.annotationList).toEqual([
+      { id: 'mock-id-1', key: 'article_title', value: '论文标题' },
+      { id: 'mock-id-2', key: 'writing_tips', value: '章节写作提示' },
+      { id: 'mock-id-3', key: 'research_idea', value: '研究内容' },
+   ]);
+
+   // 验证 preprocessList
+   expect(prompt.preprocessList).toEqual([{ id: 'mock-id-4', key: 'writing_ideas', value: '%(writing_tips)s' }]);
+
+   // 验证 variableLinker
+   expect(prompt.variableLinker['mock-id-2']).toEqual([
+      { type: 'preprocess', uniqueId: 'mock-id-4' },
+      { type: 'message', uniqueId: 4 }
+   ]);
+});
+```
+
+如果使用快照测试则直接断言快照即可。
+
+```js
+// 快照测试：验证完整输出结构
+it('should match snapshot', () => {
+   const data = {
+      "annotation": {
+            "article_title": "论文标题",
+            "writing_tips": "章节写作提示",
+            "research_idea": "研究内容"
+      },
+      "preprocessing": {
+            "writing_ideas": "%(writing_tips)s"
+      },
+      "prompt": [
+            {
+               "role": "system",
+               "content": "System message"
+            },
+            {
+               "role": "user",
+               "content": "%(article_title)s%(writing_tips)s%(research_idea)s%(writing_ideas)s"
+            }
+      ],
+      "module": "gen_research_ideas",
+      "name": "AI本科毕业论文生成写作提示",
+      "language": "all",
+      "model": "default"
+   };
+
+   const result = parsePrompt(data, langList, modelList);
+
+   // 生成快照
+   expect(result).toMatchSnapshot();
+});
+```
+
+Jest生成的快照文件：
+
+![alt text](image-5.png)
+
+之后执行该快照测试时都会进行对比，如果预期结构发生变更，也可先运行该测试查看变更是否正确，然后使用`jest --updateSnapshot`更新快照。
+
+#### 集成测试
+
+测试AIGC的导出服务（一个Nest.js编写的Node.js后端项目）：
+
+1. 准备测试环境
+
+```js
+// 测试所需的NestJS测试工具
+import { Test, TestingModule } from '@nestjs/testing';
+// 要测试的AIGC导出服务
+import { ExportAIGCService } from '@app/export/export-aigc.service';
+// AIGC导出服务依赖的浏览器服务
+import { BrowserService } from '@app/browser/browser.service';
+// AIGC导出服务使用的数据传输对象（DTO）
+import { ExportAIGCReportDto } from '@app/export/dto/ExportAIGCReport.dto';
+
+// 设置全局测试超时为60秒`（因为集成测试需要访问真实网络资源）
+jest.setTimeout(60_000);
+
+describe('ExportAIGCService', () => {
+   // 准备测试环境
+   let service: ExportAIGCService;
+   let browserService: BrowserService;
+   let module: TestingModule;
+   
+   // 在执行测试用例前执行，创建测试环境
+   beforeAll(async () => {
+      // 创建测试模块
+      module = await Test.createTestingModule({
+         providers: [ExportAIGCService, BrowserService],
+      }).compile();
+      // 从测试模块中获取AIGC导出服务实例和浏览器服务实例
+      service = module.get<ExportAIGCService>(ExportAIGCService);
+      browserService = module.get<BrowserService>(BrowserService);
+      // 手动初始化浏览器池
+      await (browserService as any).initPool();
+   });
+   // 在执行所有测试用例后执行，回收资源
+   afterAll(async () => {
+      // 如果浏览器池存在，进行清理工作
+      const pool = (browserService as any).browserPool;
+      if (pool) {
+         await pool.drain();
+         await pool.clear();
+      }
+      // 关闭测试模块，释放所有资源
+      await module.close();
+      // 恢复日志记录器的原始实现
+      jest.restoreAllMocks();
+   });
+   // 测试脚本
+});
+```
+
+2. 编写测试代码
+
+```js
+it('应该成功导出', async () => {
+   // 1. 准备测试数据
+   const dto: ExportAIGCReportDto = { taskId: 'ag250702144740050894819842' };
+   // 2. 调用AIGC导出服务的方法
+   const [result, error] = await service.exportAIGCReport(dto);
+   // 3. 断言验证
+   expect(error).toBeNull();  // 期望没有错误
+   expect(typeof result).toBe('string');  // 期望结果是字符串
+});
+```
+
+#### 组件测试
+
+```js
+// Vue.js 官方提供的用于测试 Vue 组件的工具库，可模拟组件渲染、用户交互等场景，简化组件测试流程
+import { shallowMount } from '@vue/test-utils';
+// 一个支持自定义激活颜色和宽高的开关组件
+import CommonSwitch from '@/component/CommonSwitch';
+
+describe('CommonSwitch.vue', () => {
+    // 测试默认props
+    it('使用默认props正确渲染', () => {
+        const wrapper = shallowMount(CommonSwitch)
+        expect(wrapper.props('value')).toBe(true)
+        expect(wrapper.props('inactiveColor')).toBe('#C5C5C5')
+    })
+
+    // 测试自定义props
+    it('使用自定义props正确渲染', () => {
+        const wrapper = shallowMount(CommonSwitch, {
+            propsData: {
+                value: false,
+                activeColor: '#000000',
+                inactiveColor: '#FFFFFF'
+            }
+        })
+        expect(wrapper.props('value')).toBe(false)
+        expect(wrapper.props('activeColor')).toBe('#000000')
+        expect(wrapper.props('inactiveColor')).toBe('#FFFFFF')
+    })
+
+    // 测试点击事件
+    it('点击时正确触发事件和切换状态', async () => {
+        const wrapper = shallowMount(CommonSwitch)
+        await wrapper.trigger('click')
+
+        // 验证事件触发
+        expect(wrapper.emitted('input')).toBeTruthy()
+        expect(wrapper.emitted('input')[0]).toEqual([false])
+        expect(wrapper.emitted('change')).toBeTruthy()
+        expect(wrapper.emitted('change')[0]).toEqual([false])
+    })
+});
+```
+
+#### 生成测试覆盖率报告
+
+执行`npx jest --coverage`即可生成报告，打开测试报告如下：
+
+![alt text](image-1.png)
+
+报告显示了项目的总测试覆盖率中各个模块的测试覆盖率，点击components目录可查看该目录下的测试覆盖率：
+
+![alt text](image-2.png)
+
+### 其他方案
+
+- JS：`Jest`（Webpack项目推荐），`Vitest`（Vite项目推荐），`Mocha`（库项目推荐）
+- Python：`pytest`
+- PHP：`PHPUnit`
 
 ## 端到端测试工具 - Playwright
 
@@ -185,7 +471,38 @@ export default defineConfig({
 
 ![playwright-trace-viewer.png](d86df3fbbda609e1b40fa895d6450aaf.png)
 
-### 方案对比
+### 编写一个端到端测试用例
+
+要测试的功能：登录
+
+1. 编写测试代码：使用之前生成的测试代码
+
+```js
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+    // 跳转到目标页面
+    await page.goto('http://user.xishanyigu.com/user/index/login/');
+    // 执行用户操作
+    await page.locator('.imgApp').click();
+    await page.getByRole('textbox', { name: '请输入用户名/手机号' }).click();
+    await page.getByRole('textbox', { name: '请输入用户名/手机号' }).fill('15640071419');
+    await page.getByRole('textbox', { name: '请输入用户名/手机号' }).press('Tab');
+    await page.getByRole('textbox', { name: '请输入密码' }).fill('123456.');
+    await page.locator('.check_img').click();
+    await page.getByRole('button', { name: '登录' }).click();
+    // 断言执行结果 
+    await expect(page.getByPlaceholder('请输入您的研究问题')).toBeVisible();
+});
+```
+
+2. 运行测试查看运行结果
+
+使用`npx playwright test login`运行测试用例，可以看到以下结果：
+
+![alt text](image-3.png)
+
+### 其他方案
 
 |需求/工具|Selenium|Cypress|Playwright|
 |--|--|--|--|
