@@ -27,7 +27,6 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          cd auto-test-share
           npm i -g @antfu/ni
           nci
           nr build --base /${{github.event.repository.name}}/
