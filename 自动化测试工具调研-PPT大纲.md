@@ -2,7 +2,7 @@
 
 自动化测试是指利用自动化工具执行测试用例、比较实际结果与预期结果、生成测试报告的过程。它能够减少人工干预，提高测试效率和准确性。
 
-### 按测试层次分类
+### 按测试粒度分类
 
 1. **单元测试（Unit Testing）**
    - 测试最小可测试单元（通常是函数或方法），验证单个组件的功能正确性
@@ -98,7 +98,7 @@ describe('drawUsableVariablesInString', () => {
 
 使用`npx jest`运行测试用例，可以看到以下结果：
 
-![alt text](image-4.png)
+![alt text](./img/image-4.png)
 
 从结果中我们可以看到测试运行器运行的测试用例及测试文件的数量，测试执行用时等信息。
 
@@ -239,7 +239,7 @@ it('should match snapshot', () => {
 
 Jest生成的快照文件：
 
-![alt text](image-5.png)
+![alt text](./img/image-5.png)
 
 之后执行该快照测试时都会进行对比，如果预期结构发生变更，也可先运行该测试查看变更是否正确，然后使用`jest --updateSnapshot`更新快照。
 
@@ -359,11 +359,11 @@ describe('CommonSwitch.vue', () => {
 
 执行`npx jest --coverage`即可生成报告，打开测试报告如下：
 
-![alt text](image-1.png)
+![alt text](./img/image-1.png)
 
 报告显示了项目的总测试覆盖率中各个模块的测试覆盖率，点击components目录可查看该目录下的测试覆盖率：
 
-![alt text](image-2.png)
+![alt text](./img/image-2.png)
 
 ### 其他方案
 
@@ -405,9 +405,9 @@ export default defineConfig({
 
 通过抓包工具查看请求的User-Agent可以发现使用了不同的浏览器引擎
 
-![截图](6646f151fb1c786309193249957d294c.png)
+![截图](./img/6646f151fb1c786309193249957d294c.png)
 
-![截图](0de3d9814efb0ca84b9118361408bc23.png)
+![截图](./img/0de3d9814efb0ca84b9118361408bc23.png)
 
 #### 支持自动等待
 
@@ -428,7 +428,7 @@ test('test', async ({ page }) => {
 
 运行结果：
 
-![playwright-auto-wait.png](d2c6e59c2f488a471346ae694bf33ec5.png)
+![playwright-auto-wait.png](./img/d2c6e59c2f488a471346ae694bf33ec5.png)
 
 #### 内置并行运行
 
@@ -450,7 +450,7 @@ export default defineConfig({
 
 运行playwright执行测试，运行日志说明使用6个工作线程(默认CPU数量的一半)并行运行测试用例
 
-![截图](f70d66bddb287e7f38feb43bd170304a.png)
+![截图](./img/f70d66bddb287e7f38feb43bd170304a.png)
 
 #### 强大的配套工具
 
@@ -458,12 +458,12 @@ export default defineConfig({
 
 使用代码生成器录制登录流程并自动生成相关代码：
 
-![playwright-codegen.gif](693573997014f70c69411463f3abb239.gif)
+![playwright-codegen.gif](./img/693573997014f70c69411463f3abb239.gif)
 
 
 使用调试工具和跟踪器调试测试脚本：
 
-![playwright-trace-viewer.png](d86df3fbbda609e1b40fa895d6450aaf.png)
+![playwright-trace-viewer.png](./img/d86df3fbbda609e1b40fa895d6450aaf.png)
 
 ### 编写一个端到端测试用例
 
@@ -494,7 +494,7 @@ test('test', async ({ page }) => {
 
 使用`npx playwright test login`运行测试用例，可以看到以下结果：
 
-![alt text](image-3.png)
+![alt text](./img/image-3.png)
 
 ### 其他方案
 
