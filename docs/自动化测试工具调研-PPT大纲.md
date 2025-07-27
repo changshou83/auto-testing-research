@@ -1,24 +1,8 @@
-## 第一页：封面
+## 自动化测试定义及分类
 
-1. 标题：自动化测试技术分享
-2. 分享者：谢唯
-3. 日期：2025.0X.XX
+自动化测试是指利用自动化工具执行测试用例、比较实际结果与预期结果、生成测试报告的过程。它能够减少人工干预，提高测试效率和准确性。
 
-## 第二页：目录
-
-1. 自动化测试定义及分类
-2. 自动化测试的成本与收益
-3. 测试工具 - Jest
-4. 端到端测试工具 - Playwright
-5. 总结
-
-## 第三页：自动化测试定义及分类 - 定义
-
-定义：自动化测试是指利用自动化工具执行测试用例、比较实际结果与预期结果、生成测试报告的过程。它能够减少人工干预，提高测试效率和准确性。
-
-图片展示：可以插入一张自动化测试流程的示意图
-
-## 第四页：自动化测试定义及分类 - 按测试粒度分类
+### 按测试粒度分类
 
 1. **单元测试（Unit Testing）**
    - 测试最小可测试单元（通常是函数或方法），验证单个组件的功能正确性
@@ -32,47 +16,48 @@
 
 3. **端到端测试（End-to-End Testing）**
    - 模拟真实用户场景的完整流程测试，验证关键工作流程是否正常
-   - 例如：用户登录，用户创建PDF翻译任务
+   - 例如：用户注册，用户创建PDF翻译任务
    - 常用工具：Cypress, Selenium, Playwright
 
-## 第五页：自动化测试定义及分类 - 占比
+### 测试类型的比例
 
-- 测试金字塔图片：插入一张测试金字塔的图片
-- 参考比例：
-    - 单元测试：占比约 70%
-    - 集成测试：占比约 20%
-    - 端到端测试：占比约 10%
+放一张测试金字塔的图片
 
-辅助说明：
-- 实际项目注意事项：
-    - 避免 “唯比例论”，比例的核心是 “价值导向”，而非机械分配
-    - 单元测试：覆盖 “高频变动的独立逻辑”（如工具函数、业务计算规则），避免过度测试简单逻辑（如 getter/setter）
-    - 集成测试：覆盖 “关键协作点”（如接口调用、数据转换），避免重复测试单元已验证的逻辑
-    - 端到端测试：只覆盖 “用户核心路径”（如注册 - 登录 - 支付），避免测试边缘流程（性价比低）
+参考比例为：
 
-## 第六页：自动化测试的成本与收益
+单元测试：占比约 70%
+集成测试：占比约 20%
+端到端测试：占比约 10%
 
-成本：
+在实际项目中，避免“唯比例论”，比例的核心是 “价值导向”，而非机械分配：
+
+- 单元测试：覆盖 “高频变动的独立逻辑”（如工具函数、业务计算规则），避免过度测试简单逻辑（如 getter/setter）；
+- 集成测试：覆盖 “关键协作点”（如接口调用、数据转换），避免重复测试单元已验证的逻辑；
+- 端到端测试：只覆盖 “用户核心路径”（如注册 - 登录 - 支付），避免测试边缘流程（性价比低）。
+
+## 自动化测试的成本与收益
+
+成本
 1. 测试工具的学习成本
 2. 开发人员测试意识的培养：让项目变得更具可测试性(例如之前想测注册，但是验证码没有办法拿到所以测不了)
 3. 首次适配项目的成本：封装公共能力，编写首批测试脚本
 4. 测试用例的维护：新用例的编写成本，后续改版对旧用例的破坏
 5. 局限：适用场景有限，并非所有测试都适合自动化(UI频繁变动，低频测试，主观性测试)；无法完全代替手工测试
 
-收益：
+收益
 1. 对高频重复场景和大规模场景可以显著提升测试效率，降低重复劳动成本
 2. 对核心逻辑编写对应的测试，保证后续添加新需求时不会影响旧功能
 3. 支持持续集成，代码提交后自动执行测试并生成报告
 
-## 第七页：测试工具 - Jest - 简介
+## 测试工具 - Jest
 
-简介：Jest 是 Meta（Facebook） 开发的一款开源 JavaScript 测试框架，主要用于单元测试和集成测试。它内置断言库、测试运行器和 mocking 功能，能够快速的编写自动化测试脚本。
+### 简介
 
-辅助说明：
-以Jest为工具来介绍单元测试及集成测试在项目中的实践。
-除此之外还会介绍Jest的特点功能(快照测试以及Mock功能)。
+Jest 是 **Meta（Facebook）** 开发的一款开源 JavaScript 测试框架，主要用于单元测试和集成测试。它内置断言库、测试运行器和 mocking 功能，能够快速的编写自动化测试脚本。
 
-## 第八页：测试工具 - Jest - 开箱即用的测试环境
+### 功能介绍
+
+#### 开箱即用的测试环境
 
 - 极简配置：默认即可运行测试，也可通过配置文件进行配置。
 - 内置断言库：提供丰富、可读性高的断言函数（`Jest Matchers`），支持链式调用。
@@ -81,10 +66,9 @@
 - 快照测试：首次运行保存快照，后续比较差异。适用于测试 UI 组件输出、配置文件、数据结构等。
 - 自动生成测试报告：内置集成 `Istanbul` 工具。可通过特殊标志生成测试报告，显示代码行、分支、函数、语句的覆盖情况。
 
-辅助说明：
-这些功能后面都会介绍
+#### 单元测试
 
-## 第九页：测试工具 - Jest - 单元测试 - 编写测试代码
+1. 编写测试代码
 
 ```js
 // 一个可以从字符串中提取 %(xx_xx)s 格式字符串并检查其是否在变量列表中的函数
@@ -110,38 +94,30 @@ describe('drawUsableVariablesInString', () => {
 });
 ```
 
-辅助说明：
-介绍一下单元测试的定义。
+2. 运行测试查看运行结果
 
-介绍一下要测试的功能：一个可以从字符串中提取 %(xx_xx)s 格式字符串并检查其是否在变量列表中的函数
+使用`npx jest`运行测试用例，可以看到以下结果：
 
-讲解编写单元测试用例的基本思路：
-1. 准备测试环境和测试数据
-2. 执行测试代码
-3. 断言执行结果
+![alt text](imgmage-4.png)
 
-## 第十页：测试工具 - Jest - 单元测试 - 运行测试并查看运行结果
+从结果中我们可以看到测试运行器运行的测试用例及测试文件的数量，测试执行用时等信息。
 
-运行命令：使用npx jest运行测试用例
-结果展示：插入一张测试运行结果的截图
+#### Mock功能与快照测试
 
-辅助说明：
-描述一下Jest的运行结果
+快照测试：首次运行测试时，Jest 会捕获被测对象的输出（如 UI 渲染结果、数据结构等），并将其保存在自动生成的 `.snap` 文件中作为“基准”。后续测试运行时，Jest 会将当前输出与快照文件比对，任何不一致都会导致测试失败。
 
-## 第十一页：测试工具 - Jest - Mock 功能与快照测试 - 介绍
+适用场景：
+- 输出结构稳定但内容复杂（如大段 HTML/XML，复杂对象等）
+- 需要防止意外变更的配置对象
 
-- 原理：首次运行测试时，Jest 会捕获被测对象的输出（如 UI 渲染结果、数据结构等），并将其保存在自动生成的 `.snap` 文件中作为“基准”。后续测试运行时，Jest 会将当前输出与快照文件比对，任何不一致都会导致测试失败。
-- 适用场景：
-    - 输出结构稳定但内容复杂（如大段 HTML/XML，复杂对象等）
-    - 需要防止意外变更的配置对象
-- 不适用场景：
-    - 包含动态数据（时间戳、随机 ID）
-    - 频繁变更的输出
-    - 简单的数值 / 布尔值断言
+不适用场景：
+- 包含动态数据（时间戳、随机 ID）
+- 频繁变更的输出
+- 简单的数值/布尔值断言
 
-Mocking功能：可以模拟函数、模块、定时器、第三方库或 API 调用。用于隔离依赖、验证函数调用、控制被测代码的依赖行为。
+测试解析prompt，转换为渲染时需要的数据结构：
 
-## 第十二页：测试工具 - Jest - Mock 功能与快照测试 - 准备测试环境
+mock功能演示：parsePrompt中使用getUniqueID生成唯一ID，而 getUniqueID 生成的ID有随机数会导致测试结果不可控，因此需要mock getUniqueID的实现
 
 ```js
 import { parsePrompt } from '../util';
@@ -161,12 +137,9 @@ describe('parsePrompt', () => {
 });
 ```
 
-辅助说明：
-要测试的功能：parsePrompt，作用是解析prompt（JSON）并将其转换为渲染时需要的数据结构。
+快照测试演示：
 
-通过Mock准备测试环境：parsePrompt中使用getUniqueID生成唯一ID，而 getUniqueID 生成的ID有随机数会导致测试结果不可控，因此需要mock getUniqueID的实现
-
-## 第十三页：测试工具 - Jest - Mock 功能与快照测试 - 未使用快照测试的测试代码
+想要验证输出的结构是否是预期的，如果使用断言需要编写大量的断言语句。
 
 ```js
 // 测试单条数据的正常解析
@@ -227,10 +200,7 @@ it('should parse single prompt correctly', () => {
 });
 ```
 
-辅助说明：
-想要验证输出的结构是否是预期的，如果使用断言需要编写大量的断言语句。
-
-## 第十四页：测试工具 - Jest - Mock 功能与快照测试 - 使用快照测试的测试代码
+如果使用快照测试则直接断言快照即可。
 
 ```js
 // 快照测试：验证完整输出结构
@@ -267,14 +237,17 @@ it('should match snapshot', () => {
 });
 ```
 
-## 第十五页：测试工具 - Jest - Mock 功能与快照测试 - 快照文件展示
+Jest生成的快照文件：
 
-图片展示：Jest生成的快照文件
+![alt text](imgmage-5.png)
 
-辅助说明：
-如果使用快照测试则直接断言快照即可。之后执行该快照测试时都会进行对比，如果预期结构发生变更，也可先运行该测试查看变更是否正确，然后在运行测试时使用`updateSnapshot`标志更新快照。
+之后执行该快照测试时都会进行对比，如果预期结构发生变更，也可先运行该测试查看变更是否正确，然后使用`jest --updateSnapshot`更新快照。
 
-## 第十六页：测试工具 - Jest - 集成测试 - 准备测试环境
+#### 集成测试
+
+测试AIGC的导出服务（一个Nest.js编写的Node.js后端项目）：
+
+1. 准备测试环境
 
 ```js
 // 测试所需的NestJS测试工具
@@ -324,12 +297,7 @@ describe('ExportAIGCService', () => {
 });
 ```
 
-辅助说明：
-介绍一下集成测试的定义。
-
-测试AIGC的导出服务（一个Nest.js编写的Node.js后端项目）
-
-## 第十七页：测试工具 - Jest - 集成测试 - 编写测试代码
+2. 编写测试代码
 
 ```js
 it('应该成功导出', async () => {
@@ -343,7 +311,7 @@ it('应该成功导出', async () => {
 });
 ```
 
-## 第十八页：测试工具 - Jest - 组件测试
+#### 组件测试
 
 ```js
 // Vue.js 官方提供的用于测试 Vue 组件的工具库，可模拟组件渲染、用户交互等场景，简化组件测试流程
@@ -387,34 +355,121 @@ describe('CommonSwitch.vue', () => {
 });
 ```
 
-辅助说明：
-介绍一下前端的组件测试能测什么
+#### 生成测试覆盖率报告
 
-## 第十九页：测试工具 - Jest - 生成测试覆盖率报告
+执行`npx jest --coverage`即可生成报告，打开测试报告如下：
 
-图片展示：
-![alt text](./img/image-1.png)
+![alt text](imgmage-1.png)
 
-![alt text](./img/image-2.png)
+报告显示了项目的总测试覆盖率中各个模块的测试覆盖率，点击components目录可查看该目录下的测试覆盖率：
 
-辅助说明：
-执行`npx jest --coverage`即可生成报告，测试报告如图所示。报告显示了项目的总测试覆盖率中各个模块的测试覆盖率，点击components目录可查看该目录下的测试覆盖率。
+![alt text](imgmage-2.png)
 
-## 第二十页：测试工具 - Jest - 其他方案
+### 其他方案
 
 - JS：`Jest`（Webpack项目推荐），`Vitest`（Vite项目推荐），`Mocha`（库项目推荐）
 - Python：`pytest`
 - PHP：`PHPUnit`
 
-## 第二十一页：端到端测试工具 - Playwright - 简介
+## 端到端测试工具 - Playwright
 
-简介：Playwright 是微软开发的一款开源自动化测试工具，主要用于 Web 应用的端到端测试。它支持所有现代渲染引擎，包括 Chromium、WebKit 和 Firefox，能够模拟真实用户在不同浏览器环境下的操作行为。
-图片展示：可以插入 Playwright 的官方 logo
+### 简介
 
-辅助说明：
-提一下端到端测试的定义。先介绍如何编写一个端到端测试用例，然后介绍一下这个工具的一些特性。
+Playwright 是微软开发的一款开源自动化测试工具，主要用于 Web 应用的端到端测试。它支持所有现代渲染引擎，包括 Chromium、WebKit 和 Firefox，能够模拟真实用户在不同浏览器环境下的操作行为。
 
-## 第二十二页：端到端测试工具 - Playwright - 一个端到端测试用例
+### 功能介绍
+
+#### 支持跨浏览器
+
+Playwright 支持所有现代渲染引擎，包括 Chromium、WebKit 和 Firefox。**可以确保网站在各种浏览器环境下都能正常运行，避免因浏览器差异导致的功能问题。**
+
+<br />
+
+在配置文件中添加相关配置：
+
+```javascript
+// playwright.config.js
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  // other config
+
+  /* Configure projects for major browsers */
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  ],
+});
+```
+
+通过抓包工具查看请求的User-Agent可以发现使用了不同的浏览器引擎
+
+![截图](img646f151fb1c786309193249957d294c.png)
+
+![截图](imgde3d9814efb0ca84b9118361408bc23.png)
+
+#### 支持自动等待
+
+Playwright 在执行操作前会等待元素变得可交互，无需手动设置等待时间，**提高测试的稳定性**。
+
+<br />
+
+代码示例：
+
+```javascript
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+    await page.goto('http://www.xishanyigu.com/');
+    await expect(page.getByPlaceholder('请输入您的研究问题')).toBeVisible();
+});
+```
+
+运行结果：
+
+![playwright-auto-wait.png](img2c6e59c2f488a471346ae694bf33ec5.png)
+
+#### 内置并行运行
+
+允许同时运行多个独立的测试用例，**缩短整体测试耗时**。
+
+默认情况下，测试文件并行运行，文件内的测试用例是在同一个工作进程中按顺序运行。在配置文件中添加相关配置：
+
+```javascript
+// playwright.config.js
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  // other config
+
+  /* Opt out of parallel tests on CI. */
+  workers: process.env.CI ? 1 : undefined,
+});
+```
+
+运行playwright执行测试，运行日志说明使用6个工作线程(默认CPU数量的一半)并行运行测试用例
+
+![截图](img70d66bddb287e7f38feb43bd170304a.png)
+
+#### 强大的配套工具
+
+包括可以录制操作生成对应测试代码的代码生成器，可以调试测试脚本的调试工具以及可以查看测试过程的追踪器，**为测试开发、执行及调试提供全流程支持**。
+
+使用代码生成器录制登录流程并自动生成相关代码：
+
+![playwright-codegen.gif](img93573997014f70c69411463f3abb239.gif)
+
+
+使用调试工具和跟踪器调试测试脚本：
+
+![playwright-trace-viewer.png](img86df3fbbda609e1b40fa895d6450aaf.png)
+
+### 编写一个端到端测试用例
+
+要测试的功能：登录
+
+1. 编写测试代码：使用之前生成的测试代码
 
 ```js
 import { test, expect } from '@playwright/test';
@@ -435,98 +490,13 @@ test('test', async ({ page }) => {
 });
 ```
 
-辅助说明：
-这是一个登录的端到端测试用例，可以看到他操作的是页面
+2. 运行测试查看运行结果
 
-## 第二十二页：端到端测试工具 - Playwright - 运行结果
+使用`npx playwright test login`运行测试用例，可以看到以下结果：
 
-使用`npx playwright test login`运行测试用例：
+![alt text](imgmage-3.png)
 
-图片展示：
-运行结果
-
-## 第二十四页：端到端测试工具 - Playwright - 支持跨浏览器 - 介绍
-
-支持的浏览器：Playwright 支持所有现代渲染引擎，包括 Chromium、WebKit 和 Firefox。可以确保网站在各种浏览器环境下都能正常运行，避免因浏览器差异导致的功能问题。
-
-图片展示：各个浏览器的Logo
-
-## 第二十五页：端到端测试工具 - Playwright - 支持跨浏览器 - 讲解
-
-配置：
-```js
-// playwright.config.js
-import { defineConfig, devices } from '@playwright/test';
-
-export default defineConfig({
-  // other config
-
-  /* Configure projects for major browsers */
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
-  ],
-});
-```
-
-图片展示：插入抓包工具查看请求的 User-Agent 的截图
-
-## 第二十六页：端到端测试工具 - Playwright - 支持自动等待
-
-```javascript
-import { test, expect } from '@playwright/test';
-
-test('test', async ({ page }) => {
-    await page.goto('http://www.xishanyigu.com/');
-    await expect(page.getByPlaceholder('请输入您的研究问题')).toBeVisible();
-});
-```
-
-图片展示：
-运行结果
-
-辅助说明：
-Playwright 在执行操作前会等待元素变得可交互，无需手动设置等待时间，**提高测试的稳定性**。
-
-## 第二十七页：端到端测试工具 - Playwright - 内置并行运行
-
-```javascript
-// playwright.config.js
-import { defineConfig } from '@playwright/test';
-
-export default defineConfig({
-  // other config
-
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-});
-```
-
-图片展示：
-运行结果
-
-辅助说明：
-允许同时运行多个独立的测试用例，**缩短整体测试耗时**。
-
-默认情况下，测试文件并行运行，文件内的测试用例是在同一个工作进程中按顺序运行。在配置文件中添加相关配置。
-
-运行playwright执行测试，运行日志说明使用6个工作线程(默认CPU数量的一半)并行运行测试用例
-
-## 第二十八页：端到端测试工具 - Playwright - 配套工具
-
-图片展示：
-使用代码生成器录制登录流程并自动生成相关代码
-使用调试工具和跟踪器调试测试脚本：
-
-辅助说明：
-包括可以录制操作生成对应测试代码的代码生成器，可以调试测试脚本的调试工具以及可以查看测试过程的追踪器，**为测试开发、执行及调试提供全流程支持**。
-
-使用代码生成器录制登录流程并自动生成相关代码
-
-使用调试工具和跟踪器调试测试脚本
-
-## 第二十九页：其他方案
+### 其他方案
 
 |需求/工具|Selenium|Cypress|Playwright|
 |--|--|--|--|
@@ -538,12 +508,3 @@ export default defineConfig({
 |并行测试|通过Selenium Grid支持|需要付费服务|内置支持|
 |社区|最广泛的社区支持|比Selenium小，比Playwright大|比Cypress、Selenium小|
 |学习成本|高|低|低|
-
-## 第三十页：总结
-
-总结：回顾自动化测试的定义、分类、成本与收益，以及 Jest 和 Playwright 的主要功能和特点。
-
-## 第三十一页：感谢观看
-
-感谢观看
-
