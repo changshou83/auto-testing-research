@@ -1,7 +1,7 @@
 <template>
     <div class="grid grid-cols-[3fr_2fr] gap-8">
         <div class="text-center pb-4 grid place-content-center">
-            <img class="h-50 inline-block" src="/public/jest-svgrepo-com.svg">
+            <img class="h-50 inline-block mb-2" src="/public/jest-svgrepo-com.svg">
             <div class="opacity-50 mb-2 text-sm">一个注重简单性的 JavaScript 测试框架</div>
             <div class="text-center">
             <a class="!border-none" href="https://www.npmjs.com/package/jest" target="__blank">

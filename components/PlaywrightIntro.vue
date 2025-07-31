@@ -1,7 +1,7 @@
 <template>
     <div class="grid grid-cols-[3fr_2fr] gap-8">
         <div class="text-center pb-4 grid place-content-center">
-            <img class="h-50 inline-block mx-auto" src="/public/Playwright-Logo.svg">
+            <img class="h-50 inline-block mx-auto mb-2" src="/public/Playwright-Logo.svg">
             <div class="opacity-50 mb-2 text-sm">一个专为满足端到端测试的需求而打造的测试框架</div>
             <div class="text-center">
             <a class="!border-none" href="https://www.npmjs.com/package/@playwright/test" target="__blank">
